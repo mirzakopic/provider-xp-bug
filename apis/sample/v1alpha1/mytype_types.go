@@ -28,6 +28,30 @@ import (
 // MyTypeParameters are the configurable fields of a MyType.
 type MyTypeParameters struct {
 	ConfigurableField string `json:"configurableField"`
+
+	// +optional
+	// +crossplane:generate:reference:type=OtherType
+	OtherConfigurableField *string `json:"otherConfigurableField,omitempty"`
+
+	// +immutable
+	// +optional
+	OtherConfigurableFieldRef *xpv1.Reference `json:"otherConfigurableFieldRef,omitempty"`
+
+	// +immutable
+	// +optional
+	OtherConfigurableFieldSelector *xpv1.Selector `json:"otherConfigureFieldSelector,omitempty"`
+
+	// +optional
+	// +crossplane:generate:reference:type=SomeType
+	SomeConfigurableField *string `json:"someConfigurableField,omitempty"`
+
+	// +immutable
+	// +optional
+	SomeConfigurableFieldRef *xpv1.Reference `json:"someConfigurableFieldRef,omitempty"`
+
+	// +immutable
+	// +optional
+	SomeConfigurableFieldSelector *xpv1.Selector `json:"someConfigureFieldSelector,omitempty"`
 }
 
 // MyTypeObservation are the observable fields of a MyType.

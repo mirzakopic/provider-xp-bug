@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 
+	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -38,7 +39,7 @@ import (
 )
 
 const (
-	errNotOtherType    = "managed resource is not a OtherType custom resource"
+	errNotOtherType = "managed resource is not a OtherType custom resource"
 	errTrackPCUsage = "cannot track ProviderConfig usage"
 	errGetPC        = "cannot get ProviderConfig"
 	errGetCreds     = "cannot get credentials"
@@ -137,6 +138,8 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 		return managed.ExternalObservation{}, errors.New(errNotOtherType)
 	}
 
+	cr.SetConditions(xpv1.Available())
+
 	// These fmt statements should be removed in the real implementation.
 	fmt.Printf("Observing: %+v", cr)
 
@@ -164,6 +167,8 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 	}
 
 	fmt.Printf("Creating: %+v", cr)
+
+	cr.SetConditions(xpv1.Creating())
 
 	return managed.ExternalCreation{
 		// Optionally return any details that may be required to connect to the
@@ -194,6 +199,8 @@ func (c *external) Delete(ctx context.Context, mg resource.Managed) error {
 	}
 
 	fmt.Printf("Deleting: %+v", cr)
+
+	cr.SetConditions(xpv1.Deleting())
 
 	return nil
 }

@@ -1,9 +1,33 @@
 apiVersion: sample.template.crossplane.io/v1alpha1
 kind: MyType
 metadata:
-  name: example
+  name: myexample
 spec:
   forProvider:
-    configurableField: test
+    configurableField: myTest
+    otherConfigurableFieldRef:
+      name: otherexample
+    someConfigurableFieldRef:
+      name: someexample
+  providerConfigRef:
+    name: example
+---
+apiVersion: sample.template.crossplane.io/v1alpha1
+kind: OtherType
+metadata:
+  name: otherexample
+spec:
+  forProvider:
+    configurableField: otherTest
+  providerConfigRef:
+    name: example
+---
+apiVersion: sample.template.crossplane.io/v1alpha1
+kind: SomeType
+metadata:
+  name: someexample
+spec:
+  forProvider:
+    configurableField: someTest
   providerConfigRef:
     name: example
