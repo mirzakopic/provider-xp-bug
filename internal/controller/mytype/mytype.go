@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
+	"github.com/crossplane/crossplane-runtime/pkg/meta"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -141,6 +142,10 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	// These fmt statements should be removed in the real implementation.
 	fmt.Printf("Observing: %+v", cr)
 
+	if meta.WasDeleted(cr) {
+		return managed.ExternalObservation{ResourceExists: false}, nil
+	}
+
 	cr.SetConditions(xpv1.Available())
 
 	return managed.ExternalObservation{
@@ -199,6 +204,8 @@ func (c *external) Delete(ctx context.Context, mg resource.Managed) error {
 	}
 
 	fmt.Printf("Deleting: %+v", cr)
+
+	cr.Status.SetConditions(xpv1.Deleting())
 
 	return nil
 }

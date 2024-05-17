@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
+	"github.com/crossplane/crossplane-runtime/pkg/meta"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -136,6 +137,10 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	cr, ok := mg.(*v1alpha1.SomeType)
 	if !ok {
 		return managed.ExternalObservation{}, errors.New(errNotSomeType)
+	}
+
+	if meta.WasDeleted(cr) {
+		return managed.ExternalObservation{ResourceExists: false}, nil
 	}
 
 	cr.SetConditions(xpv1.Available())
